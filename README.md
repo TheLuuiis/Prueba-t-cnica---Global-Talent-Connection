@@ -73,7 +73,7 @@ When deleting the budget, will show a modal warning the user that the budget wil
 
 Finally the las action of the budgets table will be a create one that will open the same view as the edit budget but to create a new one.
 
-# Mockups
+# Wireframes
 Budget list
 
 ![Budget list](budget_list.png)
