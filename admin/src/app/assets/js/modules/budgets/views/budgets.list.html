@@ -1,0 +1,97 @@
+<section class="forms-basic">
+  <div class="page-header">
+    <h1>Budgets</h1>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><strong>Filters</strong></div>
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-4 form-group">
+          <label>Name</label>
+          <input type="text" class="form-control" ng-model="vm.filters.name" ng-change="vm.applyFilters()" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label>Client name</label>
+          <input type="text" class="form-control" ng-model="vm.filters.clientName" ng-change="vm.applyFilters()" />
+        </div>
+        <div class="col-md-2 form-group">
+          <label>From date</label>
+          <input type="date" class="form-control" ng-model="vm.filters.fromDate" ng-change="vm.applyFilters()" />
+        </div>
+        <div class="col-md-2 form-group">
+          <label>To date</label>
+          <input type="date" class="form-control" ng-model="vm.filters.toDate" ng-change="vm.applyFilters()" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><strong>Budget list</strong></div>
+    <div class="panel-body table-responsive">
+      <div class="alert alert-danger" ng-if="vm.errorMessage">{{ vm.errorMessage }}</div>
+      <div ng-if="vm.isLoading">Loading budgets...</div>
+      <table class="table table-striped table-bordered" ng-if="!vm.isLoading">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Thumbnail</th>
+            <th>Date</th>
+            <th>Client name</th>
+            <th>Total cost</th>
+            <th>Total sale</th>
+            <th>Chapters</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="budget in vm.filteredBudgets track by budget.id">
+            <td>{{ budget.name }}</td>
+            <td>
+              <img ng-if="budget.thumbnail" ng-src="{{ budget.thumbnail }}" alt="thumbnail" style="width: 60px; height: 60px; object-fit: cover;" />
+              <span ng-if="!budget.thumbnail">-</span>
+            </td>
+            <td>{{ budget.date | date:'yyyy-MM-dd' }}</td>
+            <td>{{ budget.clientName }}</td>
+            <td>{{ budget.totalCostImport | number:2 }}</td>
+            <td>{{ budget.totalSaleImport | number:2 }}</td>
+            <td>{{ (budget.chapters || []).length }}</td>
+            <td>
+              <button class="btn btn-xs btn-info" ng-click="vm.goToEdit(budget.id)">Edit</button>
+              <button class="btn btn-xs btn-danger" ng-click="vm.openDeleteModal(budget)">Delete</button>
+            </td>
+          </tr>
+          <tr ng-if="!vm.filteredBudgets.length">
+            <td colspan="8" class="text-center">No budgets found</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7"></td>
+            <td>
+              <button class="btn btn-primary btn-sm" ng-click="vm.goToCreate()">Create budget</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal" ng-if="vm.budgetPendingDeletion" style="display: block; background: rgba(0, 0, 0, 0.45);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Delete budget</h4>
+        </div>
+        <div class="modal-body">
+          This action will permanently delete <strong>{{ vm.budgetPendingDeletion.name }}</strong>. Continue?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default" ng-click="vm.cancelDelete()">Cancel</button>
+          <button class="btn btn-danger" ng-click="vm.confirmDelete()">Accept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

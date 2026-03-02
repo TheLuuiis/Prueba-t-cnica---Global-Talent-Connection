@@ -1,0 +1,141 @@
+<section class="forms-basic">
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <h1>{{ vm.isCreateMode ? 'Create budget' : 'Edit budget' }}</h1>
+    <button class="btn btn-default" ng-click="vm.goBack()">Back to list</button>
+  </div>
+
+  <div class="panel panel-default" ng-if="!vm.isLoading">
+    <div class="panel-heading"><strong>Budget information</strong></div>
+    <div class="panel-body">
+      <div class="alert alert-danger" ng-if="vm.errorMessage">{{ vm.errorMessage }}</div>
+      <div class="alert alert-success" ng-if="vm.successMessage">{{ vm.successMessage }}</div>
+
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label>Name</label>
+          <input class="form-control" type="text" ng-model="vm.budget.name" />
+        </div>
+        <div class="col-md-3 form-group">
+          <label>Date</label>
+          <input class="form-control" type="date" ng-model="vm.budget.date" />
+        </div>
+        <div class="col-md-3 form-group">
+          <label>Client name</label>
+          <input class="form-control" type="text" ng-model="vm.budget.clientName" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 form-group">
+          <label>Total cost (calculated)</label>
+          <input class="form-control" type="number" ng-value="vm.budget.totalCostImport" disabled />
+        </div>
+        <div class="col-md-3 form-group">
+          <label>Total sale (calculated)</label>
+          <input class="form-control" type="number" ng-value="vm.budget.totalSaleImport" disabled />
+        </div>
+        <div class="col-md-6 form-group">
+          <label>Thumbnail</label>
+          <div class="m-b-10">
+            <img ng-if="vm.budget.thumbnail" ng-src="{{ vm.budget.thumbnail }}" alt="thumbnail" style="max-width: 220px; max-height: 130px; object-fit: cover;" />
+            <span ng-if="!vm.budget.thumbnail">No thumbnail</span>
+          </div>
+          <input
+            class="form-control"
+            type="file"
+            accept="image/*"
+            onchange="angular.element(this).scope().vm.onThumbnailSelected(this.files)"
+          />
+          <button class="btn btn-warning btn-xs m-t-10" type="button" ng-click="vm.removeThumbnail()">Delete thumbnail</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default" ng-if="!vm.isLoading">
+    <div class="panel-heading d-flex justify-content-between align-items-center">
+      <strong>Chapters and batches</strong>
+      <button class="btn btn-primary btn-xs" ng-click="vm.addChapter()">Create chapter</button>
+    </div>
+    <div class="panel-body table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Rank</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Material cost</th>
+            <th>Labour cost</th>
+            <th>Material coeff.</th>
+            <th>Labour coeff.</th>
+            <th>Unitary cost</th>
+            <th>Total cost</th>
+            <th>Unitary sale</th>
+            <th>Total sale</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody ng-repeat="chapter in vm.budget.chapters track by $index">
+          <tr class="info">
+            <td><span class="label label-primary">Chapter</span></td>
+            <td>{{ chapter.rank }}</td>
+            <td>
+              <input class="form-control" type="text" ng-model="chapter.description" />
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>
+              <input class="form-control" type="number" min="0" step="0.01" ng-model="chapter.materialSaleCoefficient" ng-change="vm.recalculate()" />
+            </td>
+            <td>
+              <input class="form-control" type="number" min="0" step="0.01" ng-model="chapter.labourSaleCoefficient" ng-change="vm.recalculate()" />
+            </td>
+            <td>-</td>
+            <td>{{ chapter.totalCostImport | number:2 }}</td>
+            <td>-</td>
+            <td>{{ chapter.totalSaleImport | number:2 }}</td>
+            <td>
+              <button class="btn btn-success btn-xs" ng-click="vm.addBatch(chapter)">Create batch</button>
+              <button class="btn btn-danger btn-xs" ng-click="vm.deleteChapter($index)">Delete chapter</button>
+            </td>
+          </tr>
+
+          <tr ng-repeat="batch in chapter.batches track by $index">
+            <td><span class="label label-default">Batch</span></td>
+            <td>{{ batch.rank }}</td>
+            <td>
+              <input class="form-control" type="text" ng-model="batch.description" />
+            </td>
+            <td>
+              <input class="form-control" type="number" min="0" step="0.01" ng-model="batch.amount" ng-change="vm.recalculate()" />
+            </td>
+            <td>
+              <input class="form-control" type="number" min="0" step="0.01" ng-model="batch.materialCostImport" ng-change="vm.recalculate()" />
+            </td>
+            <td>
+              <input class="form-control" type="number" min="0" step="0.01" ng-model="batch.labourCostImport" ng-change="vm.recalculate()" />
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>{{ batch.unitaryCostImport | number:2 }}</td>
+            <td>{{ batch.totalCostImport | number:2 }}</td>
+            <td>{{ batch.unitarySaleCost | number:2 }}</td>
+            <td>{{ batch.totalSaleImport | number:2 }}</td>
+            <td>
+              <button class="btn btn-danger btn-xs" ng-click="vm.deleteBatch(chapter, $index)">Delete batch</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div ng-if="!vm.budget.chapters.length" class="text-muted">No chapters yet. Click "Create chapter" to start.</div>
+    </div>
+  </div>
+
+  <div class="text-right" ng-if="!vm.isLoading">
+    <button class="btn btn-primary" ng-disabled="vm.isSaving || !vm.canSave()" ng-click="vm.saveBudget()">
+      {{ vm.isSaving ? 'Saving...' : 'Save budget' }}
+    </button>
+  </div>
+</section>

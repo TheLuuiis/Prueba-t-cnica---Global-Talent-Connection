@@ -1,0 +1,54 @@
+{
+  "name": "Budget",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "thumbnail": {
+      "type": "string",
+      "default": ""
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "clientName": {
+      "type": "string",
+      "required": true
+    },
+    "totalCostImport": {
+      "type": "number",
+      "default": 0
+    },
+    "totalSaleImport": {
+      "type": "number",
+      "default": 0
+    },
+    "chapters": {
+      "type": [
+        "object"
+      ],
+      "default": []
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$unauthenticated",
+      "permission": "DENY"
+    }
+  ]
+}
