@@ -41,6 +41,12 @@
             <span ng-if="!vm.budget.thumbnail">No thumbnail</span>
           </div>
           <input
+            class="form-control m-b-10"
+            type="url"
+            placeholder="https://example.com/image.jpg"
+            ng-model="vm.budget.thumbnail"
+          />
+          <input
             class="form-control"
             type="file"
             accept="image/*"

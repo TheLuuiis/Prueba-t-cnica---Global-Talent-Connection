@@ -56,7 +56,7 @@
             <td>{{ budget.clientName }}</td>
             <td>{{ budget.totalCostImport | number:2 }}</td>
             <td>{{ budget.totalSaleImport | number:2 }}</td>
-            <td>{{ (budget.chapters || []).length }}</td>
+            <td>{{ vm.getChaptersSummary(budget.chapters) }}</td>
             <td>
               <button class="btn btn-xs btn-info" ng-click="vm.goToEdit(budget.id)">Edit</button>
               <button class="btn btn-xs btn-danger" ng-click="vm.openDeleteModal(budget)">Delete</button>

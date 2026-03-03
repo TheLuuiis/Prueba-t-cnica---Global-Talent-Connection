@@ -19,6 +19,7 @@ export default function BudgetsListController($state, BudgetApiService) {
   vm.openDeleteModal = openDeleteModal;
   vm.cancelDelete = cancelDelete;
   vm.confirmDelete = confirmDelete;
+  vm.getChaptersSummary = getChaptersSummary;
 
   activate();
 
@@ -98,6 +99,24 @@ export default function BudgetsListController($state, BudgetApiService) {
       .catch(function() {
         vm.errorMessage = 'There was an error deleting the budget. Please try again.';
       });
+  }
+
+  function getChaptersSummary(chapters) {
+    const chapterList = (chapters || [])
+      .map(function(chapter) {
+        const rank = Number.isFinite(Number(chapter.rank)) ? Number(chapter.rank) : '';
+        const description = (chapter.description || '').trim();
+
+        if (rank && description) return `${rank}. ${description}`;
+        if (rank) return `${rank}.`;
+        return description;
+      })
+      .filter(function(summaryLine) {
+        return !!summaryLine;
+      });
+
+    if (!chapterList.length) return '-';
+    return chapterList.join(' | ');
   }
 }
 

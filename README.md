@@ -87,3 +87,31 @@ After you received the email with the instructions you will the mentioned on the
 
 # Delivering Instructions
 In order to deliver this test you will create a private repo on your provider of choice (Github, GitLab, ...), include jplaza@taktics.net as a user capable of cloning the solution and reply the email sended to you with the link to access to the solution repository.
+
+# Implementation status (Budgets)
+The Budgets test requirements are implemented end-to-end in this repository using AngularJS 1.5.8 + LoopBack 3.
+
+## Backend (LoopBack)
+- `Budget` model created with required fields:
+  - `name`, `thumbnail`, `date`, `clientName`, `totalCostImport`, `totalSaleImport`, `chapters`
+- Access control configured for authenticated users.
+- Automatic calculations on `before save`:
+  - Batch: unitary/total cost and unitary/total sale
+  - Chapter: total cost and total sale
+  - Budget: total cost and total sale
+- Seed data provided in `api/server/boot/budgets-seed.js`.
+
+## Frontend (AngularJS)
+- Sidebar contains a dedicated **Budgets** section.
+- Budgets list view includes:
+  - Filters by name, client name and date range
+  - Budgets table with all budget fields as columns (including thumbnail and chapters)
+  - Actions per row: edit and delete
+  - Create action to open budget detail in creation mode
+  - Delete confirmation modal with Accept/Cancel behavior
+- Budget detail view includes:
+  - Editable upper form for non-calculated fields
+  - Thumbnail preview + remove + replace (URL or image upload)
+  - Bottom table for chapters and batches with visual differentiation
+  - CRUD actions for chapters and batches
+  - Real-time recalculation chain (batch → chapter → budget)
